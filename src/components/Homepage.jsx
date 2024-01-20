@@ -21,9 +21,9 @@ function Homepage() {
            const coinData = await axios.get(`${baseUrl}/coins`,{headers:cryptoApiHeaders})
              setGlobalStats(coinData.data?.data.stats)
          }
-
          FetchData()
     },[])
+    
   return (
     <> 
        <Title level={2} className='heading'>Global Crypto Stats </Title> 
@@ -48,7 +48,7 @@ function Homepage() {
             <Link to='/cryptocurrencies'>Show More</Link>
           </Title>
        </div>
-        <News/>
+        {  /*<News simplified={true} /> */}
 
     </>
   )

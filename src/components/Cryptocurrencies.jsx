@@ -20,6 +20,7 @@ const Cryptocurrencies = ({simplified})=> {
           const coin = await axios.get(`${baseUrl}/coins?limit=${count}`, { headers: cryptoApiHeaders });
           setApiData(coin.data?.data?.coins);
           setCrypto(coin.data?.data?.coins);
+          console.log(coin)
         };
     
         fetchData();
@@ -35,9 +36,13 @@ const Cryptocurrencies = ({simplified})=> {
     
   return (
     <>
-    <div className='search-crypto'>
-       <Input placeholder='Search Crypttocurrency' onChange={(e)=> setSearchTerm(e.target.value)}/>
-    </div>
+    {
+      !simplified && (
+        <div className='search-crypto'>
+        <Input placeholder='Search Crypttocurrency' onChange={(e)=> setSearchTerm(e.target.value)}/>
+       </div>
+      )
+    }
       <Row gutter={[32,32]} className='crypto-card-container'>
          {
             crypto.map((currency)=>(
