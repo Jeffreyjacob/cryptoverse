@@ -9,6 +9,8 @@ import { useParams } from 'react-router-dom';
 import { Col, Row, Typography, Select } from 'antd';
 import millify from 'millify';
 import HTMLReactParser from 'html-react-parser';
+import LineCharts from './lineChart';
+
 
 
 function CryptoDetail() {
@@ -17,6 +19,7 @@ function CryptoDetail() {
   const { coinId } = useParams()
   const [cryptoDetails, setCryptoDetails] = useState([]);
   const [timePeriod, setTimePeriod] = useState('7d');
+  const [cryptoHistory,setCryptoHisttory] = useState([]);
   console.log(coinId)
   const baseUrl = "https://coinranking1.p.rapidapi.com";
   const cryptoApiHeaders = {
@@ -28,7 +31,18 @@ function CryptoDetail() {
       const getCoinDetails = await axios.get(`${baseUrl}/coin/${coinId}`, { headers: cryptoApiHeaders })
       setCryptoDetails(getCoinDetails.data?.data.coin)
     }
+    const fetchCoinHistory = async ()=>{
+      const getCoinHistory = await axios.get(`${baseUrl}/coin/${coinId}/history?timePeriod=${timePeriod}`, { headers: cryptoApiHeaders })
+      if (!Array.isArray(getCoinHistory.data?.data)) {
+        // Convert the non-array response to an array
+        const dataArray = [getCoinHistory.data?.data];
+        setCryptoHisttory(dataArray);
+      }
+        
+    }
     fetchDetail()
+    fetchCoinHistory()
+
   }, [])
 
   const time = ['3h', '24h', '7d', '30d', '1y', '3m', '3y', '5y'];
@@ -69,6 +83,13 @@ function CryptoDetail() {
         }
       </Select>
       {/* line chart */}
+        {
+          cryptoHistory.map((history,i)=>(
+            <LineCharts coinHistory={history} currentPrice={millify(cryptoDetails.price)} coinName={cryptoDetails.name}/>
+          ))
+        }
+      
+ 
       <Col className='stats-container'>
         <Col className='coin-value-statistics'>
           <Col className='coin-value-statistics-header'>
@@ -137,6 +158,7 @@ function CryptoDetail() {
             )}
           </Title>
         </Row>
+           
       </Col>
     </Col>
   )
